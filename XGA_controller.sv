@@ -203,6 +203,6 @@ module XGA_controller #(
       XGA_B<=0;
  end
  end
- //VGA DRIVING SIGNALS LOGIC END
+ //VGA DRIVING SIGNALS LOGIC END gang what we doing here fuckng hell what mate
 
 endmodule
