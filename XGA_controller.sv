@@ -62,7 +62,7 @@ module XGA_controller #(
    //PLL INSTANTIATION
    clock_0002 u1(
 	.refclk   (clk),        //  refclk.clk
-	.rst      (~rst_n),      //   reset.reset
+	.rst      (~rst_n),     //   reset.reset
 	.outclk_0 (XGA_clk),    // outclk0.clk
 	.locked   (locked)      //  locked.export
 ); 
