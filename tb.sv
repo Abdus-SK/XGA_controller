@@ -16,11 +16,21 @@
    logic [10:0] h_count_delay_out;
    logic [9:0]  v_count_delay_out;
 
-   
+
   XGA_controller DUT (
     .clk(clk),
-    .rst_n(rst)
-  );
+    .rst_n(rst),
+    .XGA_R        (XGA_R),        
+    .XGA_G        (XGA_G),        
+    .XGA_B        (XGA_B),        
+    .h_sync_delay (h_sync_delay), 
+    .v_sync_delay (v_sync_delay), 
+    .DE_delay     (DE_delay),     
+    .DE_delay1    (DE_delay1),    
+    .XGA_SYNC_N   (XGA_SYNC_N),
+    .h_count_delay_out(h_count_delay_out),
+    .v_count_delay_out(v_count_delay_out)
+    );
 
 
 
