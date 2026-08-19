@@ -44,6 +44,20 @@
     
     
     end
-
+    
+    always @(posedge clk) begin
+    $display("time=%0t DE=%b HS=%b VS=%b RGB=%h_%h_%h DE_1=%b X_sync=%b",
+             $time,
+             h_sync_delay,
+             v_sync_delay,
+             XGA_R,
+             XGA_G,
+             XGA_B,
+             DE_delay,
+             XGA_SYNC_N,
+             h_count_delay_out,
+             v_count_delay_out
+             );
+    end
 
   endmodule
