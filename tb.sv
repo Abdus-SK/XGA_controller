@@ -54,6 +54,7 @@
              XGA_G,
              XGA_B,
              DE_delay,
+             DE_delay1,
              XGA_SYNC_N,
              h_count_delay_out,
              v_count_delay_out
