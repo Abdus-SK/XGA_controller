@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
  module tb;
-   parameter logic [3:0] bits = 4'd8; 
+   parameter int bits = 8; 
    logic[bits-1:0]XGA_R;
    logic[bits-1:0]XGA_B;
    logic[bits-1:0]XGA_G;
@@ -19,7 +19,7 @@
 
   XGA_controller DUT (
     .clk(clk),
-    .rst_n(rst),
+    .rst_n(rst_n),
     .XGA_R        (XGA_R),        
     .XGA_G        (XGA_G),        
     .XGA_B        (XGA_B),        
@@ -32,6 +32,18 @@
     .v_count_delay_out(v_count_delay_out)
     );
 
+    //clock Gen 
+    initial clk =1'b0;
+    always #5 clk=~clk; // always without portlist always be running  
+
+    initial begin
+      rst_n = 1'b0;
+      #100;
+      rst_n = 1'b1;
+    
+    
+    
+    end
 
 
-endmodule
+  endmodule
