@@ -12,7 +12,7 @@ module shift_r #(
     output logic h_sync_out,
     output logic v_sync_out,
     output logic DE_out,
-    output logic [10:0] H_count_out,
+    output logic [10:0] H_count_out, 
     output logic [9:0]  V_count_out,
     output logic DE_delay1
 );
