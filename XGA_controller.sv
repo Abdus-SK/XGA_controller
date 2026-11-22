@@ -5,7 +5,7 @@
 `define SIM
 `timescale 1ns/1ps
 module XGA_controller #(
-   parameter logic [3:0]  bits = 4'd8,
+   parameter int bits = 4,
    parameter logic [10:0] H_t  = 11'd1344,
    parameter logic [10:0] H_a  = 11'd1024,
    parameter logic [10:0] H_s  = 11'd136,
