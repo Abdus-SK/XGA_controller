@@ -52,9 +52,12 @@ module XGA_controller #(
    logic [9:0] v_count_delay;
    
  
-   wire mrst_n;
+   wire        mrst_raw_n; 
+   logic [1:0] rst_sync;            // NEW: 2 flip-flops
+   logic       mrst_n;
+   logic [1:0] tp_sync;             // NEW: 2 flip-flops for the switch
    parameter int PIPE_DEPTH = 2;
-   assign mrst_n=rst_n & locked;
+   assign mrst_raw_n = rst_n & locked;
    assign XGA_SYNC_N= 1'b1;
 
 
@@ -63,14 +66,34 @@ module XGA_controller #(
    assign locked  = 1'b1; 
    //assign mrst_n  = rst_n;
 `else
-   //PLL INSTANTIATION
-   clock_0002 u1(
-	.refclk   (clk),        //  refclk.clk
-	.rst      (~rst_n),     //   reset.reset
-	.outclk_0 (XGA_clk),    // outclk0.clk
-	.locked   (locked)      //  locked.export
-); 
+   `else
+   //PLL INSTANTIATION (Xilinx MMCM, 100 MHz -> 65 MHz)
+   clk_gen u1(
+	.clk_in  (clk),
+	.rst     (~rst_n),
+	.clk_out (XGA_clk),
+	.locked  (locked)
+   ); 
 `endif
+   //PLL INSTANTIATION
+   //clock_0002 u1(
+	//.refclk   (clk),        //  refclk.clk
+	//.rst      (~rst_n),     //   reset.reset
+	//.outclk_0 (XGA_clk),    // outclk0.clk
+	//.locked   (locked)      //  locked.export
+   
+   
+   // reset logic for the flipflop
+   always_ff @(posedge XGA_clk or negedge mrst_raw_n) begin
+      if (!mrst_raw_n) rst_sync <= 2'b00;
+      else             rst_sync <= {rst_sync[0], 1'b1};
+   end
+   assign mrst_n = rst_sync[1];
+
+   always_ff @(posedge XGA_clk or negedge mrst_n) begin
+      if (!mrst_n) tp_sync <= 2'b00;
+      else         tp_sync <= {tp_sync[0], test_pattern};
+   end
 
  //Counter
    always_ff @(posedge XGA_clk or negedge mrst_n)begin:A1
@@ -133,31 +156,25 @@ module XGA_controller #(
 
 
  //FSM Combinational block
- always_comb begin
+  always_comb begin
+  HNS = HCS;                                          
   case(HCS)
-      Ha:
-			HNS=(h_count==H_a-1)? Hfp : Ha;
-      Hfp:
-			HNS=(h_count==H_a+H_fp-1)? Hs : Hfp;
-      Hs:
-			HNS=(h_count==H_a+H_fp+H_s-1)? Hbp : Hs;
-      Hbp:
-			HNS=(h_count==H_a+H_fp+H_s+H_bp-1)? Ha : Hbp;
-	   default: HNS=Ha;
+      Ha:  if (h_count==H_a-1)HNS = Hfp;
+      Hfp: if (h_count==H_a+H_fp-1)HNS = Hs;
+      Hs:  if (h_count==H_a+H_fp+H_s-1)HNS = Hbp;
+      Hbp: if (h_count==H_a+H_fp+H_s+H_bp-1)HNS = Ha;
+      default: HNS = Ha;
   endcase
  end
 
  always_comb begin
+  VNS = VCS;
   case (VCS)
-      Va:
-         VNS=(v_count==V_a-1)? Vfp:Va;
-      Vfp:
-         VNS=(v_count==V_a+V_fp-1)?Vs:Vfp;
-      Vs:
-         VNS=(v_count==V_a+V_fp+V_s-1)?Vbp:Vs;
-      Vbp:
-         VNS=(v_count==V_a+V_fp+V_s+V_bp-1)?Va:Vbp;
-      default:VNS=Va;
+      Va:  if (v_count==V_a-1)VNS = Vfp;
+      Vfp: if (v_count==V_a+V_fp-1)VNS = Vs;
+      Vs:  if (v_count==V_a+V_fp+V_s-1)VNS = Vbp;
+      Vbp: if (v_count==V_a+V_fp+V_s+V_bp-1)VNS = Va;
+      default: VNS = Va;
   endcase
  end
  
