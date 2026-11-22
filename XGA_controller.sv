@@ -2,10 +2,13 @@
 //U2 = Shiftregisters
 //U3 = FB
 
-`define SIM
+`ifndef SYNTHESIS
+  `define SIM
+`endif
+
 `timescale 1ns/1ps
 module XGA_controller #(
-   parameter int bits = 4,
+   parameter logic [3:0] bits = 4'd4,
    parameter logic [10:0] H_t  = 11'd1344,
    parameter logic [10:0] H_a  = 11'd1024,
    parameter logic [10:0] H_s  = 11'd136,
@@ -24,6 +27,7 @@ module XGA_controller #(
 		
    input logic rst_n,
    input logic clk,
+   input logic test_pattern,
 
    output logic h_sync_delay,
    output logic v_sync_delay,
@@ -40,7 +44,7 @@ module XGA_controller #(
    logic DE;
 
    wire XGA_clk;
-   logic [23:0] pixeldata;
+   logic [3*bits-1:0] pixeldata;
    logic locked;
    logic [10:0] h_count;
    logic [9:0] v_count;
