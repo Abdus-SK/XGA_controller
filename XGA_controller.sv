@@ -195,11 +195,12 @@ module XGA_controller #(
    .DE_delay1   (DE_delay1)
  );
 
- FB u3(
-    .clk     (XGA_clk),
-    .h_count (h_count),
-    .v_count (v_count),
-    .pixel   (pixeldata)
+ FB #(.H_a(H_a), .V_a(V_a), .BITS(bits)) u3(
+    .clk          (XGA_clk),
+    .h_count      (h_count),
+    .v_count      (v_count),
+    .test_pattern (tp_sync[1]), //switch add
+    .pixel        (pixeldata)
    );
 
  //DRIVING OUTPUT
@@ -214,9 +215,9 @@ module XGA_controller #(
       XGA_B<=0;
  end 
 	 else if(DE_delay1) begin
-      XGA_R<=pixeldata[23:16];
-      XGA_G<=pixeldata[15:8];
-      XGA_B<=pixeldata[7:0];
+      XGA_R<=pixeldata[3*bits-1:2*bits];   //  [11:8]
+      XGA_G<=pixeldata[2*bits-1:bits];     //  [7:4]
+      XGA_B<=pixeldata[bits-1:0];          //  [3:0]
  end
 	 else begin
       XGA_R<=0;
