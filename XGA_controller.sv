@@ -66,7 +66,6 @@ module XGA_controller #(
    assign locked  = 1'b1; 
    //assign mrst_n  = rst_n;
 `else
-   `else
    //PLL INSTANTIATION (Xilinx MMCM, 100 MHz -> 65 MHz)
    clk_gen u1(
 	.clk_in  (clk),
